@@ -6,13 +6,7 @@ from __future__ import absolute_import
 from __future__ import print_function
 
 import numpy as np
-import re
-from scipy import linalg
 import scipy.ndimage as ndi
-from six.moves import range
-import os
-import threading
-import warnings
 
 
 try:
@@ -211,3 +205,4 @@ def apply_transform(x,
     x = np.stack(channel_images, axis=0)
     x = np.rollaxis(x, 0, channel_axis + 1)
     return x
+
