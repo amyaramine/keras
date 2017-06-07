@@ -172,6 +172,12 @@ def transform_matrix_offset_center(matrix, x, y):
     return transform_matrix
 
 
+def flip_axis(x, axis):
+    x = np.asarray(x).swapaxes(axis, 0)
+    x = x[::-1, ...]
+    x = x.swapaxes(0, axis)
+    return x
+
 def apply_transform(x,
                     transform_matrix,
                     channel_axis=0,
@@ -205,51 +211,3 @@ def apply_transform(x,
     x = np.stack(channel_images, axis=0)
     x = np.rollaxis(x, 0, channel_axis + 1)
     return x
-
-
-def flip_axis(x, axis):
-    x = np.asarray(x).swapaxes(axis, 0)
-    x = x[::-1, ...]
-    x = x.swapaxes(0, axis)
-    return x
-
-
-
-
-def load_img(path, grayscale=False, target_size=None):
-    """Loads an image into PIL format.
-
-    # Arguments
-        path: Path to image file
-        grayscale: Boolean, whether to load the image as grayscale.
-        target_size: Either `None` (default to original size)
-            or tuple of ints `(img_height, img_width)`.
-
-    # Returns
-        A PIL Image instance.
-
-    # Raises
-        ImportError: if PIL is not available.
-    """
-    if pil_image is None:
-        raise ImportError('Could not import PIL.Image. '
-                          'The use of `array_to_img` requires PIL.')
-    img = pil_image.open(path)
-    if grayscale:
-        if img.mode != 'L':
-            img = img.convert('L')
-    else:
-        if img.mode != 'RGB':
-            img = img.convert('RGB')
-    if target_size:
-        hw_tuple = (target_size[1], target_size[0])
-        if img.size != hw_tuple:
-            img = img.resize(hw_tuple)
-    return img
-
-
-def list_pictures(directory, ext='jpg|jpeg|bmp|png'):
-    return [os.path.join(root, f)
-            for root, _, files in os.walk(directory) for f in files
-            if re.match(r'([\w]+\.(?:' + ext + '))', f)]
-
